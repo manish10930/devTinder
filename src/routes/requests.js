@@ -3,6 +3,8 @@ const express = require("express");
 const ConnectionRequest = require("../models/connectionRequest");
 const { connectionRequestValidation } = require("../utils/validator");
 
+const User = require("../models/user");
+
 
 const userAuth = require("../middlewares/auth");
 const requestRouter = express.Router();
@@ -16,13 +18,31 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
         toUserId: req.params.toUserId,
         status: req.params.status,
     });
-    try {
 
+
+    try {
+        // console.log("fromUserId-->",fromUserId.toString());
+        // console.log("toUserId-->",toUserId);
+
+        if (fromUserId.toString() === toUserId.toString()) {
+            throw Error("You can not send request to yourself");
+        }
+        const isToUserExits = await User.findById({ _id: toUserId });
+
+        const FromUserFirstName=await User.findById({_id:fromUserId},{firstName:1,_id:0});
+        
+        console.log("FromUserFirstName-->",FromUserFirstName);
+
+        if (!isToUserExits) {
+            throw Error("User Does not Exist");
+        }
         const isConnectionRequestExist = await
             ConnectionRequest.findOne({ fromUserId: fromUserId, toUserId: toUserId });
-        
+
         const userAlreadySentRequest = await ConnectionRequest
             .findOne({ fromUserId: toUserId, toUserId: fromUserId });
+
+            
         if (userAlreadySentRequest) {
             throw Error("You have already received request from this user");
         }
@@ -34,8 +54,9 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
             throw Error("You have Already Sent Request !!");
         }
         const data = await connectionRequest.save();
+
         res.json({
-            message: "Request Sent",
+            message: `${FromUserFirstName.firstName} ${status} Your Profile`,
             data: data
         })
 
