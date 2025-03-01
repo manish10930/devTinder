@@ -68,4 +68,40 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
 
 });
 
+requestRouter.post("/request/review/:status/:requestId",userAuth, async (req, res) => {
+
+    try{
+
+        const loggedInUserId=req.user._id;
+        const requestId=req.params.requestId;
+        const status=req.params.status;
+
+        const AllowedStatus=["accepted","rejected"];
+        if(!AllowedStatus.includes(status)){
+            
+            return res.status(400).json({message:"Status not Allowed"});
+        }
+        const NloggedInUserId=loggedInUserId._id.toString();
+        const connectionRequest=await ConnectionRequest.findOne({_id:requestId,toUserId:NloggedInUserId,status:"Interested"});
+        if(!connectionRequest){
+            return res.status(404).json({message:"Connection Request Not Found"});
+        }
+        connectionRequest.status=status;
+
+        await connectionRequest.save();
+        res.status(200).json({
+            status_code:200,
+            message:"Request Reviewed"});
+        
+        //is manish===touserID
+        // status===interested
+        // requestId=1234
+        // requstid is correct or not
+
+
+    }
+    catch(error){
+        res.status(500).send(error.message);
+    }   
+});
 module.exports = requestRouter;
