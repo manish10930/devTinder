@@ -47,8 +47,9 @@ authRouter.post("/login", async (req, res) => {
 
     try {
 
-        const user = await User.findOne
-            ({ email: email });
+        const user = await User.findOne({ email: email });
+
+            console.log("user-->",user?.firstName);
 
 
         if (!user) {
@@ -63,7 +64,7 @@ authRouter.post("/login", async (req, res) => {
         else {
             const token = await user.getJWT();
             res.cookie("token", token);
-            res.json({ status:200,message: "Logged in successfully", token: token });
+            res.json({ status:200,message: "Logged in successfully!! Welcome back-- "+user.firstName, token: token });
         }
     } catch (error) {
         res.status(500).send(error.message);

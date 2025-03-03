@@ -11,8 +11,16 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
 
     const user = req.user;
 
+    const filteredUserData={
+        firstName:user.firstName,
+        LastName:user.LastName,
+        email:user.email,
+        skills:user.skills,
+
+    }
+
     try {
-        res.send(user);
+        res.status(200).json({message:"Profile fetched successfully",data:filteredUserData});
     } catch (error) {
         res.status(500).send(error.message);
     }
