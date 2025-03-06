@@ -4,6 +4,15 @@ const app = express();
 
 const User = require('./models/user');
 const authRouter = require("./routes/auth");
+const cores = require('cors');
+
+const corsOptions = {
+    origin: 'http://localhost:5173', // Allow only this origin
+    optionsSuccessStatus: 200,
+    credentials: true,
+  };
+app.use(cores(corsOptions));
+
 
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/requests");

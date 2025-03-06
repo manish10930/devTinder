@@ -10,12 +10,21 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     const cookies = req.cookies;
 
     const user = req.user;
+    console.log("user--->",user)
 
     const filteredUserData={
         firstName:user.firstName,
         LastName:user.LastName,
         email:user.email,
         skills:user.skills,
+        about:user.about,
+        photoUrl:user.photoUrl,
+        dateOfBirth:user.dateOfBirth,
+        age:user.age,
+        createdAt:user.createdAt,
+        gender:user.gender,
+        dateOfBirth:user.dateOfBirth
+
 
     }
 
