@@ -11,6 +11,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
 
     const user = req.user;
     console.log("user--->",user)
+    
 
     const filteredUserData={
         firstName:user.firstName,
